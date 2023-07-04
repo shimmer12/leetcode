@@ -1,20 +1,28 @@
 class Solution {
 public:
-    int romanToInt(string S) {
-        int ans = 0, num = 0;
-        for (int i = S.size()-1; ~i; i--) {
-            switch(S[i]) {
-                case 'I': num = 1; break;
-                case 'V': num = 5; break;
-                case 'X': num = 10; break;
-                case 'L': num = 50; break;
-                case 'C': num = 100; break;
-                case 'D': num = 500; break;
-                case 'M': num = 1000; break;
-            }
-            if (4 * num < ans) ans -= num;
-            else ans += num;
-        }
-        return ans;        
-    }
+    int romanToInt(string s) 
+{
+    unordered_map<char, int> T = { { 'I' , 1 },
+                                   { 'V' , 5 },
+                                   { 'X' , 10 },
+                                   { 'L' , 50 },
+                                   { 'C' , 100 },
+                                   { 'D' , 500 },
+                                   { 'M' , 1000 } };
+                                   
+   int sum = T[s.back()];
+   for (int i = s.length() - 2; i >= 0; --i) 
+   {
+       if (T[s[i]] < T[s[i + 1]])
+       {
+           sum -= T[s[i]];
+       }
+       else
+       {
+           sum += T[s[i]];
+       }
+   }
+   
+   return sum;
+}
 };
