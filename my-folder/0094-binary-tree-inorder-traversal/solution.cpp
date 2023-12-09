@@ -1,12 +1,18 @@
 class Solution {
 public:
-    vector<int> vec; 
     vector<int> inorderTraversal(TreeNode* root) {
-        if(root==NULL)
-            return {};
-        inorderTraversal(root->left);
-        vec.push_back(root->val);
-        inorderTraversal(root->right);
-        return vec;
+        vector<int> nodes;
+        stack<TreeNode*> todo;
+        while (root || !todo.empty()) {
+            while (root) {
+                todo.push(root);
+                root = root -> left;
+            }
+            root = todo.top();
+            todo.pop();
+            nodes.push_back(root -> val);
+            root = root -> right;
+        }
+        return nodes;
     }
 };
