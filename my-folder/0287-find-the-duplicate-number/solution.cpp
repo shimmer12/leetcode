@@ -1,20 +1,21 @@
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
-        int n = nums.size();
-         unordered_map<int,int>mp;
-for(int num:nums){
-    mp[num]++;
-}
-       
-       // mp[nums[i]]++;
+      int hare=nums[0],tort=nums[0];
 
-    for(auto it :mp){
-        if(it.second!=1){
-            return it.first;
-        }
+      do{
+          hare=nums[nums[hare]];
+          tort=nums[tort];
+
+      }while(hare!=tort);
+
+
+      tort=nums[0];
+      while(hare!=tort){
+          hare=nums[hare];
+          tort=nums[tort];
+      }
+      return hare;
     }
-    return -1;
-    } 
-};
 
+};
