@@ -1,49 +1,59 @@
-
 class Solution {
-#define ll long long int
-    public:
-    void dfs(vector<vector<int>> &graph,vector<bool> &visited,int &c,int &i)
-    {
-        visited[i]=true;
-        c++;
-        for(int j=0;j<graph[i].size();j++)
-        {
-            if(!visited[graph[i][j]])
-             dfs(graph,visited,c,graph[i][j]);   
-        }
+public:
+    
+	// Check if (x2, y2) lie within the proximity of (x1, y1)
+    bool check(long long x1, long long y1, long long x2, long long y2, long long d) {
+        long long x = (x1-x2) * (x1-x2);
+        long long y = (y1-y2) * (y1-y2);
+        
+        return (x + y  <= d * d);
     }
-    int maximumDetonation(vector<vector<int>>& bombs) {
-
-        int n=bombs.size();
-        vector<vector<int> > graph(n);
-        for(int i=0;i<n;i++)
-        {
-            ll x1,y1,r1;
-            x1=bombs[i][0];
-            y1=bombs[i][1];
-            r1=bombs[i][2];
-            for(int j=0;j<n;j++)
-            {
-                if(i!=j)
-                {
-                     ll x2,y2,r2;
-                     x2=abs(x1-bombs[j][0]);
-                     y2=abs(y1-bombs[j][1]);
-                    if(x2*x2+y2*y2<=r1*r1)
-                    {
-                        graph[i].push_back(j);
-                    }
-                }
+    
+	// DFS to detonate "node" , and count number of other nodes 
+	// that can be detonated (visited) from currernt node.
+    int detonate(vector<vector<int>>& adj, vector<bool>& vis, int node, int n) {
+        
+        int count = 1;
+        vis[node] = true;
+        
+        for(auto& adjnode : adj[node]) {
+            if(!vis[adjnode]) {
+                count += detonate(adj, vis, adjnode, n);
             }
         }
-        int ans=INT_MIN;
-        for(int i=0;i<n;i++)
-        {
-            int c=0;
-            vector<bool> visited(n,false);
-            dfs(graph,visited,c,i);
-            ans=max(ans,c);
+        
+        return count;
+    }
+    
+    int maximumDetonation(vector<vector<int>>& bombs) {
+        
+        int n = bombs.size();
+        
+        int maxBombs = 0;
+        
+		// Adjacency list to store all edges for nodes [0, n-1]
+		// i.e all bombs that lie within proximity of node
+        vector<vector<int>> deto_adj(n);
+        
+		// Create graph by connecting directed edges
+		// Between ith and jth node
+        for(int i=0; i<n; i++) {
+            for(int j=0; j<n; j++) {
+                if(i != j && check(bombs[i][0], bombs[i][1], bombs[j][0], bombs[j][1], bombs[i][2])) {
+                    deto_adj[i].push_back(j);
+                }  
+            }
         }
-        return ans;
+        
+		// For each bomb, do simple DFS (detonate)
+		// And get count of nodes that can be visited from current node		
+        for(int i=0; i<n; i++) {
+            vector<bool> vis(n, false);
+            
+			// Also update maximum count
+            maxBombs = max(maxBombs, detonate(deto_adj, vis, i, n));
+        }
+        
+        return maxBombs;
     }
 };
