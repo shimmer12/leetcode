@@ -11,19 +11,31 @@
  */
 class Solution {
 public:
-
     int ans={};
     int diameterOfBinaryTree(TreeNode* root){
         dfs(root);
         return ans;
     }
-
     int dfs(TreeNode* node){
-        if(!node) return 0;
-        int l = dfs(node->left);
-        int r = dfs(node->right);
-        node->left = node->right = NULL;
-        ans = max(ans, l+r);
+        if(!node)return 0;
+        int l=dfs(node->left);
+        int r=dfs(node->right);
+        node->left=node->right=NULL;
+        ans=max(ans,l+r);
         return 1+max(l,r);
     }
+    // int ans={};
+    // int diameterOfBinaryTree(TreeNode* root){
+    //     dfs(root);
+    //     return ans;
+    // }
+
+    // int dfs(TreeNode* node){
+    //     if(!node) return 0;
+    //     int l = dfs(node->left);
+    //     int r = dfs(node->right);
+    //     node->left = node->right = NULL;
+    //     ans = max(ans, l+r);
+    //     return 1+max(l,r);
+    // }
 };
