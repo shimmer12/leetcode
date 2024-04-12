@@ -1,23 +1,23 @@
 class Solution {
 public:
-    int trap(vector<int>& A) {
-        int N = A.size(), ans = 0;
-        
-        vector<int> left(N, 0), right(N, 0);
-        
-        for(int i = 1; i < N; i++) {
-            left[i] = max(left[i - 1], A[i - 1]);
+    int trap(vector<int>& height) {
+        int n = height.size();
+        vector<int> left(n);
+        vector<int> right(n);
+        int maximum = height[0];
+        for(int i=0;i<n;i++){
+            maximum = max(maximum,height[i]);
+            left[i] = maximum;
         }
-        
-        for(int i = N - 2; i >= 0; i--) {
-            right[i] = max(right[i + 1], A[i + 1]);
+        maximum = height[n-1];
+        for(int i=n-1;i>=0;i--){
+            maximum = max(maximum,height[i]);
+            right[i] = maximum;
         }
-        
-        for(int i = 1; i < N - 1; i++) {
-            ans += max(0, min(left[i], right[i]) - A[i]);
+        int ans = 0;
+        for(int i=0;i<n;i++){
+            ans += min(left[i],right[i])-height[i];
         }
-        
         return ans;
-        
     }
 };
