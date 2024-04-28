@@ -1,36 +1,40 @@
 class Solution {
+    int head[30010], end[60010], next[60010], idx;
+    int siz[30010], n;
+    vector<int> ans;
+    void add (int a, int b) {
+        end[idx] = b, next[idx] = head[a], head[a] = idx++;
+    }
 public:
-       vector<unordered_set<int>> tree;
-    vector<int> res, count;
-
-    vector<int> sumOfDistancesInTree(int N, vector<vector<int>>& edges) {
-        tree.resize(N);
-        res.assign(N, 0);
-        count.assign(N, 1);
-        for (auto e : edges) {
-            tree[e[0]].insert(e[1]);
-            tree[e[1]].insert(e[0]);
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        memset(head, -1, 4 * n + 4);
+        for (auto &edge : edges) {
+            int a = edge[0], b = edge[1];
+            add(a, b), add(b, a);
         }
+        this -> n = n;
+        this -> ans = vector<int> (n);
+        dfs(0, -1, 0);
         dfs(0, -1);
-        dfs2(0, -1);
-        return res;
-
+        return ans;
     }
-
-    void dfs(int root, int pre) {
-        for (auto i : tree[root]) {
-            if (i == pre) continue;
-            dfs(i, root);
-            count[root] += count[i];
-            res[root] += res[i] + count[i];
+    void dfs(int u, int pre, int level) {
+        ans[0] += level;
+        siz[u] = 1;
+        for (int e = head[u]; ~e; e = next[e]) {
+            int v = end[e];
+            if ((e ^ 1) != pre) {
+                dfs(v, e, level + 1);
+                siz[u] += siz[v];
+            }
         }
     }
-
-    void dfs2(int root, int pre) {
-        for (auto i : tree[root]) {
-            if (i == pre) continue;
-            res[i] = res[root] - count[i] + count.size() - count[i];
-            dfs2(i, root);
+    void dfs(int u, int pre) {
+        for (int e = head[u]; ~e; e = next[e]) {
+            if ((e ^ 1) == pre) continue;
+            int v = end[e];
+            ans[v] = ans[u] + n - 2 * siz[v];
+            dfs(v, e);
         }
     }
 };
